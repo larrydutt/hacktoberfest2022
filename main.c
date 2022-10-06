@@ -1,75 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-int V;
-int distMin(int length[], int Spath[]);
-
-void display(int length[]);
-
-void dijkstra(int graph[V][V], int source);
+int count;
+void quicksort(int number[100], int first, int last);
 
 int main()
 {
-    printf("Enter number of vertices\n");
-    scanf("%d", &V);
-    int graph[V][V];
-    printf("Enter adjacency matrix\n", V);
+   int i, n, number[100];
 
-    for (int i = 0; i < V; i++)
-    {
-        for (int j = 0; j < V; j++)
-        {
-            scanf("%d", &graph[i][j]);
-        }
-    }
+   printf("Enter number of elements: ");
+   scanf("%d", &n);
 
-    dijkstra(graph, 0);
+    for (i = 0; i < n; i++){
+        printf("Enter element number %d \n",i+1);
+        scanf("%d", &number[i]);}
 
-    return 0;
+   quicksort(number, 0, n - 1);
+
+   printf("Elements after Sorting ");
+   for (i = 0; i < n; i++)
+      printf(" %d", number[i]);
+
+   printf("\nNumber of Comparisons:%d", count);
+
+   return 0;
 }
 
-int distMin(int length[], int Spath[])
+void quicksort(int number[100], int first, int last)
 {
-    int min = INT_MAX, min_index;
+   int i, j, pivot, temp;
 
-    for (int v = 0; v < V; v++)
-        if (Spath[v] == 0 && length[v] <= min)
-            min = length[v], min_index = v;
+   if (first < last)
+   {
+      pivot = first;
+      i = first;
+      j = last;
 
-    return min_index;
+      while (i < j)
+      {
+         count++;
+         while (number[i] <= number[pivot] && i < last)
+            i++;
+         count++;
+         while (number[j] > number[pivot])
+            j--;
+         if (i < j)
+         {
+            temp = number[i];
+            number[i] = number[j];
+            number[j] = temp;
+         }
+      }
+
+      temp = number[pivot];
+      number[pivot] = number[j];
+      number[j] = temp;
+      quicksort(number, first, j - 1);
+      quicksort(number, j + 1, last);
+   }
 }
-
-void display(int length[])
-{
-    printf("Vertex No \t\t Distance from starting Source\n");
-    for (int i = 0; i < V; i++)
-        printf("%d \t\t\t %d\n", i, length[i]);
-}
-
-void dijkstra(int graph[V][V], int source)
-{
-    int length[V];
-
-    int Spath[V];
-
-    for (int i = 0; i < V; i++)
-        length[i] = INT_MAX, Spath[i] = 0;
-
-    length[source] = 0;
-
-    for (int count = 0; count < V - 1; count++)
-    {
-
-        int u = distMin(length, Spath);
-
-        Spath[u] = 1;
-
-        for (int v = 0; v < V; v++)
-
-            if (!Spath[v] && graph[u][v] && length[u] != INT_MAX && length[u] + graph[u][v] < length[v])
-                length[v] = length[u] + graph[u][v];
-    }
-
-    display(length);
-}
-
